@@ -3,8 +3,16 @@ import Foundation
 class OpenAIManager {
     static let shared = OpenAIManager()
 
-    private let apiKey = "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"
+    private let apiKey: String
+
+    init(apiKey: String = ProcessInfo.processInfo.environment["OPENAI_API_KEY"] ?? "") {
+        self.apiKey = apiKey
+    }
     func classify(note: String, completion: @escaping (_ amount: Double, _ category: String, _ note: String, _ date: Date) -> Void) {
+        guard !apiKey.isEmpty else {
+            print("❌ 缺少 OPENAI_API_KEY")
+            return
+        }
         guard let url = URL(string: "https://api.openai.com/v1/chat/completions") else {
             print("❌ 錯誤")
             return
